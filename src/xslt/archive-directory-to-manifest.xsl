@@ -16,12 +16,12 @@
  
  <xsl:output indent="yes" method="xml" />
  
- <xsl:param name="root" select="''" />
- <xsl:variable name="root-fix" select="if($root = '') 
-  then $root 
-  else 
-   if (not(ends-with($root, '/'))) 
-     then $root || '/' 
+ <xsl:param name="root" as="xs:string?" select="''" />
+ <xsl:variable name="root-fix" select="if(empty($root) or $root = '')
+  then ''
+  else
+   if (not(ends-with($root, '/')))
+     then $root || '/'
      else $root"/>
  
  <!--
@@ -62,7 +62,7 @@
  <xsl:template match="c:file" mode="archive-entry">
   <xsl:param name="parent-base" />
   <xsl:param name="parent-dir-name" />
-  <xsl:variable name="dir-path" select="if($parent-dir-name = '') then '' else concat($root-fix, $parent-dir-name)" />
+  <xsl:variable name="dir-path" select="concat($root-fix, $parent-dir-name)" />
   <xsl:variable name="base" select="@xml:base"/>
   <xsl:variable name="full-base" select="concat($parent-base, $base)"/>
   <c:entry name="{concat($dir-path, $base)}" href="{$full-base}" />
