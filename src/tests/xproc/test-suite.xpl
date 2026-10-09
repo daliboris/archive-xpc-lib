@@ -9,7 +9,6 @@
 	version="3.0">
 
 	<p:import href="../../xproc/archive-xpc-lib.xpl" />
- <p:option name="serialization" select="map {'indent' : true()}" static="true" />
 
 	<p:documentation>
 		<xhtml:section>
@@ -23,7 +22,7 @@
 		</xhtml:section>
 	</p:documentation>
 
- <p:output port="result" primary="true" pipe="result@store-report" serialization="$serialization" />
+ <p:output port="result" primary="true" pipe="result@store-report" serialization="map {'indent' : true()}" />
 
 	<p:option name="input-directory" select="'../input/root'" as="xs:string" />
 	<p:option name="output-directory" select="'../output'" as="xs:string" />
@@ -87,7 +86,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t01" />
- <p:store href="{$output-directory}/single-filter-depth-1/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/single-filter-depth-1/check.xml" serialization="map {'indent' : true()}">
 		<p:with-input pipe="check@single-filter-depth-1-check" />
 	</p:store>
 
@@ -115,7 +114,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t02" />
- <p:store href="{$output-directory}/single-filter-depth-3/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/single-filter-depth-3/check.xml" serialization="map {'indent' : true()}">
 		<p:with-input pipe="check@single-filter-depth-3-check" />
 	</p:store>
 
@@ -145,7 +144,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t03" />
- <p:store href="{$output-directory}/multiple-filters/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/multiple-filters/check.xml" serialization="map {'indent' : true()}">
 		<p:with-input pipe="check@multiple-filters-check" />
 	</p:store>
 
@@ -176,7 +175,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t04" />
- <p:store href="{$output-directory}/empty-filter/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/empty-filter/check.xml" serialization="map {'indent' : true()}">
 		<p:with-input pipe="check@empty-filter-check" />
 	</p:store>
 
@@ -206,7 +205,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t05" />
- <p:store href="{$output-directory}/root-directory/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/root-directory/check.xml" serialization="map {'indent' : true()}">
 		<p:with-input pipe="check@root-directory-check" />
 	</p:store>
 
@@ -227,7 +226,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t06" />
- <p:store href="{$output-directory}/directory-match/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/directory-match/check.xml" serialization="map {'indent' : true()}">
 		<p:with-input pipe="check@directory-match-check" />
 	</p:store>
 
@@ -250,7 +249,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t07" />
- <p:store href="{$output-directory}/directories-single-filter/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/directories-single-filter/check.xml" serialization="map {'indent' : true()}">
 		<p:with-input pipe="check@directories-single-filter-check" />
 	</p:store>
 
@@ -273,7 +272,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t08" />
- <p:store href="{$output-directory}/directories-multiple-filters/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/directories-multiple-filters/check.xml" serialization="map {'indent' : true()}">
 		<p:with-input pipe="check@directories-multiple-filters-check" />
 	</p:store>
 
@@ -296,7 +295,7 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t09" />
- <p:store href="{$output-directory}/directories-empty-filter/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/directories-empty-filter/check.xml" serialization="map {'indent' : true()}">
   <p:with-input pipe="check@directories-empty-filter-check" />
  </p:store>
  
@@ -321,17 +320,38 @@
 			}" />
 	</dxt:check-archives>
 	<p:identity name="t10" />
- <p:store href="{$output-directory}/directories-root-directory/check.xml" serialization="$serialization">
+ <p:store href="{$output-directory}/directories-root-directory/check.xml" serialization="map {'indent' : true()}">
   <p:with-input pipe="check@directories-root-directory-check" />
+ </p:store>
+
+	<!-- 11: file and directory names with spaces and diacritics (fixture ../input/names) -->
+	<dxar:archive-directory name="special-names"
+		input-directory="{$input-directory}/../names"
+		output-directory="{$output-directory}/special-names"
+		output-file-name-pattern="special-names.zip"
+		max-depth="2"
+		base-uri="{$base-uri}">
+		<p:with-option name="filter" select="'.*\.xml'" />
+	</dxar:archive-directory>
+	<dxt:check-archives name="special-names-check" test-name="special-names" description="Names with spaces and diacritics: entry names are not URI-encoded.">
+		<p:with-input pipe="result-uri@special-names" />
+		<p:with-input port="manifest" pipe="manifest@special-names" />
+		<p:with-option name="expected" select="map{
+			'special-names.zip' : ('file with spaces.xml', 'sub dir/čeština.xml')
+			}" />
+	</dxt:check-archives>
+	<p:identity name="t11" />
+ <p:store href="{$output-directory}/special-names/check.xml" serialization="map {'indent' : true()}">
+  <p:with-input pipe="check@special-names-check" />
  </p:store>
 
 	<!-- Report -->
 	<p:wrap-sequence wrapper="dxt:test-results">
-		<p:with-input pipe="result@t01 result@t02 result@t03 result@t04 result@t05 result@t06 result@t07 result@t08 result@t09 result@t10" />
+		<p:with-input pipe="result@t01 result@t02 result@t03 result@t04 result@t05 result@t06 result@t07 result@t08 result@t09 result@t10 result@t11" />
 	</p:wrap-sequence>
 	<p:add-attribute attribute-name="failed" attribute-value="{count(//dxt:test[@status = 'failed'])}" />
 	<p:add-attribute attribute-name="passed" attribute-value="{count(//dxt:test[@status = 'passed'])}" />
- <p:store href="{resolve-uri($output-directory, $base-uri)}/test-results.xml" serialization="$serialization" name="store-report" />
+ <p:store href="{resolve-uri($output-directory, $base-uri)}/test-results.xml" serialization="map {'indent' : true()}" name="store-report" />
 
 	<p:variable name="failed" select="xs:integer(/*/@failed)" />
 	<p:if test="$fail-on-error and $failed gt 0">

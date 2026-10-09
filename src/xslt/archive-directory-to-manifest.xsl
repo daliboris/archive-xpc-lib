@@ -65,7 +65,8 @@
   <xsl:variable name="dir-path" select="concat($root-fix, $parent-dir-name)" />
   <xsl:variable name="base" select="@xml:base"/>
   <xsl:variable name="full-base" select="concat($parent-base, $base)"/>
-  <c:entry name="{concat($dir-path, $base)}" href="{$full-base}" />
+  <!-- @xml:base is URI-encoded (spaces as %20), so the entry name uses @name; href stays a URI -->
+  <c:entry name="{concat($dir-path, @name)}" href="{$full-base}" />
  </xsl:template>
  
 </xsl:stylesheet>
